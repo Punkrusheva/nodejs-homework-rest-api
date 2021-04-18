@@ -5,7 +5,7 @@ const listContacts = async () => {
   return db.get('contacts').value()
 }
 
-const getContactById = async (contactId) => {
+const getById = async (contactId) => {
   return db.get('contacts').find({id: contactId }).value()
 }
 
@@ -35,7 +35,7 @@ const updateContact = async (contactId, body) => {
 
 module.exports = {
   listContacts,
-  getContactById,
+  getById,
   removeContact,
   addContact,
   updateContact

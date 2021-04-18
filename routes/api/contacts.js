@@ -5,9 +5,6 @@ const {
   validationCreateContact,
   validationPutContact,
   validationPatchContact } = require('./valid-contact-router')
-console.log(validationCreateContact)
-console.log(validationPutContact)
-console.log(validationPatchContact)
 
 router.get('/', async (req, res, next) => {
   try {
@@ -15,7 +12,6 @@ router.get('/', async (req, res, next) => {
     return res.json({
       status: 'success',
       code: 200,
-      message: 'All Contacts',
       data: contacts,
     })
   } catch (err) {
@@ -25,12 +21,11 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:contactId', async (req, res, next) => {
     try {
-      const contact = await Contacts.getContactById(req.params.contactId)
+      const contact = await Contacts.getById(req.params.contactId)
       if (contact) {
         return res.json({
       status: 'success',
       code: 200,
-      message: 'Get contact',
       data: contact,
       })
       } else {
@@ -67,7 +62,7 @@ router.delete('/:contactId', async (req, res, next) => {
         return res.json({
       status: 'success',
       code: 200,
-      message: 'Get contact',
+      message: "contact deleted",
       data: contact,
       })
       } else {
@@ -113,7 +108,6 @@ router.put('/:contactId', validationPutContact,
         return res.json({
       status: 'success',
       code: 200,
-      message: 'Get contact',
       data: contact,
       })
       } else {

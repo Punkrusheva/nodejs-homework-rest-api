@@ -22,8 +22,7 @@ const validate = async (schema, obj, next) => {
         await schema.validateAsync(obj)
         return next()
     } catch (err) {
-        console.log(err)
-        next({ status: 400, message: err.message.replace(/"/g, "'") })
+        next({ status: 400, message: err.message.replace(/"/g, "'")})
  }
 }
 
