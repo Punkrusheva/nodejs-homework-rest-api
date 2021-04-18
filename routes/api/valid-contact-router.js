@@ -3,18 +3,18 @@ const joi = require('joi');
 const schemaCreateContact = joi.object({
     name: joi.string().min(3).max(30).required(),
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).optional(),
-    phone: joi.string().max(16).pattern(/^\([\d]{2,3}\)\ [\d]{2,3}-[\d]{3,4}$/).optional()
+    phone: joi.string().max(16).pattern(/^\([\d]{2,3}\)\[\d]{2,3}-[\d]{3,4}$/).optional()
  })
 
  const schemaPutContact = joi.object({
     name: joi.string().min(3).max(30).optional(),
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).optional(),
-    phone: joi.string().max(16).pattern(/^\([\d]{2,3}\)\ [\d]{2,3}-[\d]{3,4}$/).optional()
+    phone: joi.string().max(16).pattern(/^\([\d]{2,3}\)\[\d]{2,3}-[\d]{3,4}$/).optional()
  }).or('name', 'email', 'phone')
 
  const schemaPatchContact = joi.object({
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).optional(),
-    phone: joi.string().max(16).pattern(/^\([\d]{2,3}\)\ [\d]{2,3}-[\d]{3,4}$/).optional()
+    phone: joi.string().max(16).pattern(/^\([\d]{2,3}\)\[\d]{2,3}-[\d]{3,4}$/).optional()
  })
  
 const validate = async (schema, obj, next) => {
