@@ -1,76 +1,130 @@
-// const shortid = require('shortid')
-const fs = require('fs')
-const path = require('path')
 const express = require('express')
 const router = express.Router()
-// const { query, validationResult } = require('express-validator')
+const Contacts = require('../../model/contacts')
+const {
+  validationCreateContact,
+  validationPutContact,
+  validationPatchContact } = require('./valid-contact-router')
+console.log(validationCreateContact)
+console.log(validationPutContact)
+console.log(validationPatchContact)
 
-const contactsPath = path.join(__dirname, '../../model/contacts.json')
-
-router.get('/', async (_req, res, next) => {
-  function listContacts () {
-    fs.readFile(contactsPath, { encoding: 'utf8' }, (err, data) => {
-      if (err) { console.log(err.message) } else {
-        const contacts = JSON.parse(data)
-        res.json(contacts)
-      }
-    })
-  }
+router.get('/', async (req, res, next) => {
   try {
-    listContacts()
+    const contacts = await Contacts.listContacts()
+    return res.json({
+      status: 'success',
+      code: 200,
+      message: 'All Contacts',
+      data: contacts,
+    })
   } catch (err) {
     next(err)
   }
 })
 
-router.get('/:contactId',
-// [query('contactId').isNumeric()],
-  async (req, res, next) => {
-    /* const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
-    } */
-    function getById(contactId) {
-      contactId = Number(contactId)
-      fs.readFile(contactsPath, { encoding: 'utf8' }, (err, data) => {
-        if (err) { console.log(err.message) } else {
-          const contacts = JSON.parse(data)
-          const contact = contacts.find(contact => contact.id === contactId)
-          res.json(contact)
-        }
-      })
-    }
+router.get('/:contactId', async (req, res, next) => {
     try {
-      const { contactId } = req.params
-      getById(contactId)
+      const contact = await Contacts.getContactById(req.params.contactId)
+      if (contact) {
+        return res.json({
+      status: 'success',
+      code: 200,
+      message: 'Get contact',
+      data: contact,
+      })
+      } else {
+        return res.status(404).json({
+      status: 'error',
+      code: 404,
+      data: 'Not Found',
+    })
+    }
     } catch (err) {
       next(err)
-      // res.status(404).json({ message: 'Not found' })
     }
   })
-/*
-router.post('/', [query('contactId').isNumeric(), query('name').isString(), query('email').isEmail(), query('phone').isMobilePhone()], async (req, res, next) => {
-  const errors = validationResult(res)
-  if (!errors.isEmpty()) {
-    return res.statusMessage(400).json({ errors: errors.array() })
+
+router.post('/', validationCreateContact,
+  async (req, res, next) => {
+   try {
+    const contact = await Contacts.addContact(req.body)
+    return res.status(201).json({
+      status: 'success',
+      code: 201,
+      message: 'Contact add',
+      data:  contact,
+    })
+  } catch (err) {
+    next(err)
   }
-  res.json({ message: 'template message' })
 })
 
-router.delete('/:contactId', [query('contactId').isNumeric()], async (req, res, next) => {
-  const errors = validationResult(res)
-  if (!errors.isEmpty()) {
-    return res.statusMessage(400).json({ errors: errors.array() })
-  }
-  res.json({ message: 'template message' })
+router.delete('/:contactId', async (req, res, next) => {
+  try {
+      const contact = await Contacts.removeContact(req.params.contactId)
+      if (contact) {
+        return res.json({
+      status: 'success',
+      code: 200,
+      message: 'Get contact',
+      data: contact,
+      })
+      } else {
+        return res.status(404).json({
+      status: 'error',
+      code: 404,
+      data: 'Not Found',
+    })
+    }
+    } catch (err) {
+      next(err)
+    }
 })
 
-router.patch('/:contactId', [query('contactId').isNumeric(), query('name').isString(), query('email').isEmail(), query('phone').isMobilePhone()], async (req, res, next) => {
-  const errors = validationResult(res)
-  if (!errors.isEmpty()) {
-    return res.statusMessage(400).json({ errors: errors.array() })
-  }
-  res.json({ message: 'template message' })
+router.patch('/:contactId',validationPatchContact, 
+  async (req, res, next) => {
+  try {
+      const contact = await Contacts.updateContact(req.params.contactId, req.body)
+      if (contact) {
+        return res.json({
+      status: 'success',
+      code: 200,
+      message: 'Get contact',
+      data: contact,
+      })
+      } else {
+        return res.status(404).json({
+      status: 'error',
+      code: 404,
+      data: 'Not Found',
+    })
+    }
+    } catch (err) {
+      next(err)
+    }
 })
-*/
+
+router.put('/:contactId', validationPutContact, 
+  async (req, res, next) => {
+  try {
+      const contact = await Contacts.updateContact(req.params.contactId, req.body)
+      if (contact) {
+        return res.json({
+      status: 'success',
+      code: 200,
+      message: 'Get contact',
+      data: contact,
+      })
+      } else {
+        return res.status(404).json({
+      status: 'error',
+      code: 404,
+      data: 'Not Found',
+    })
+    }
+    } catch (err) {
+      next(err)
+    }
+})
 module.exports = router

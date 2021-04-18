@@ -9,7 +9,12 @@ const app = express()
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 
 app.use(logger(formatsLogger))
-app.use(cors())
+app.use(cors({
+  "origin": "*",
+  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  "preflightContinue": false,
+  "optionsSuccessStatus": 204
+}))
 app.use(express.json())
 
 app.use('/api/contacts', contactsRouter)
@@ -19,7 +24,7 @@ app.use((_req, res) => {
 })
 
 app.use((err, req, res, next) => {
-  res.status(500).json({ message: err.message })
+  res.status(500).json({ status: 'fail', message: err.message })
 })
 
 module.exports = app
