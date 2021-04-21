@@ -1,36 +1,54 @@
 const db = require('./db')
-const { v4: uuidv4 } = require('uuid')
+const { ObjectId } = require('mongodb') 
+
+const getCollection = async (db, name) => {
+  const client = await db
+  const collection = await client.db().collection(name)
+  return collection
+}
 
 const listContacts = async () => {
-  return db.get('contacts').value()
+  const collection = await getCollection(db, 'contacts')
+  const results = await collection.find().toArray()
+  return results
 }
 
 const getById = async (contactId) => {
-  return db.get('contacts').find({id: contactId }).value()
+  const collection = await getCollection(db, 'contacts')
+  const objectId = new ObjectId(contactId)
+  const result = await collection.find({ _id: objectId }).toArray()
+  return result
 }
 
 const removeContact = async (contactId) => {
-  const [user] = db.get('contacts').remove({ id: contactId }).write()
-  return user
+  const collection = await getCollection(db, 'contacts')
+  const objectId = new ObjectId(contactId)
+  const { value: result } = await collection.findOneAndDelete({ _id: objectId  })
+  return result
 }
 
 const addContact = async (body) => {
-  const id = uuidv4()
   const user = {
-    id,
     ...body,
     ...(body.name ? {} : { name: '' }),
     ...(body.email ? {} : { email: '' }),
     ...(body.phone ? {} : { phone: '' }),
+    ...(body.favorite ? {} : { favorite: false }),
   }
-  db.get('contacts').push(user).write()
-  return user
+  const collection = await getCollection(db, 'contacts')
+  const { ops: [result] } = await collection.insertOne(user)
+  return result
 }
 
 const updateContact = async (contactId, body) => {
-  const user = db.get('contacts').find({ id: contactId }).assign(body).value()
-  db.write()
-  return user.id ? user : null
+  const collection = await getCollection(db, 'contacts')
+  const objectId = new ObjectId(contactId)
+  const { value: result } = await collection.findOneAndUpdate(
+    { _id: objectId },
+    { $set: body },
+    { returnOriginal: false },
+  )
+  return result
 }
 
 module.exports = {
