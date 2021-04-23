@@ -1,20 +1,22 @@
 const joi = require('joi');
+const mongoose = require('mongoose')
 
 const schemaCreateContact = joi.object({
-    name: joi.string().min(3).max(30).required(),
+    name: joi.string().min(3).max(30).pattern(/[A-Z]\w+/).required(),
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).optional(),
-    phone: joi.string().max(16).pattern(/^\([\d]{2,3}\)\[\d]{2,3}-[\d]{3,4}$/).optional()
+    phone: joi.string().min(10).max(14).required(),
+    favorite: joi.boolean().optional()
  })
 
  const schemaPutContact = joi.object({
     name: joi.string().min(3).max(30).optional(),
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).optional(),
-    phone: joi.string().max(16).pattern(/^\([\d]{2,3}\)\[\d]{2,3}-[\d]{3,4}$/).optional()
- }).or('name', 'email', 'phone')
+    phone: joi.string().max(16).pattern(/^\([\d]{2,3}\)\[\d]{2,3}-[\d]{3,4}$/).optional(),
+    favorite: joi.boolean().optional()
+ }).or('name', 'email', 'phone', 'favorite')
 
  const schemaPatchContact = joi.object({
-    email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).optional(),
-    phone: joi.string().max(16).pattern(/^\([\d]{2,3}\)\[\d]{2,3}-[\d]{3,4}$/).optional()
+    favorite: joi.boolean().required(),
  })
  
 const validate = async (schema, obj, next) => {
@@ -32,12 +34,18 @@ const validationCreateContact = async (req, res, next) => {
 const validationPutContact = async (req, res, next) => {
     return await validate(schemaPutContact, req.body, next)
 }
-    const validationPatchContact = async (req, res, next) => {
+const validationPatchContact = async (req, res, next) => {
     return await validate(schemaPatchContact, req.body, next)
 }
-
+const validationObjectId = async (req, res, next) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return next({ status: 400, message: 'Invalid Object Id' })
+    }
+    next()
+  }
 module.exports = {
     validationCreateContact,
     validationPutContact,
     validationPatchContact,
+    validationObjectId
 }
