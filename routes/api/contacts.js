@@ -4,7 +4,9 @@ const Contacts = require('../../model/contacts')
 const {
   validationCreateContact,
   validationPutContact,
-  validationPatchContact } = require('./valid-contact-router')
+  validationPatchContact,
+  validationObjectId} = require('./valid-contact-router')
+const handleError = require('../../helper/handle-error')
 
 router.get('/', async (req, res, next) => {
   try {
@@ -19,7 +21,7 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-router.get('/:contactId', async (req, res, next) => {
+router.get('/:contactId', validationObjectId, async (req, res, next) => {
     try {
       const contact = await Contacts.getById(req.params.contactId)
       if (contact) {
@@ -41,8 +43,7 @@ router.get('/:contactId', async (req, res, next) => {
   })
 
 router.post('/', validationCreateContact,
-  async (req, res, next) => {
-   try {
+  handleError(async (req, res, next) => {
     const contact = await Contacts.addContact(req.body)
     return res.status(201).json({
       status: 'success',
@@ -50,10 +51,7 @@ router.post('/', validationCreateContact,
       message: 'Contact add',
       data:  contact,
     })
-  } catch (err) {
-    next(err)
-  }
-})
+}))
 
 router.delete('/:contactId', async (req, res, next) => {
   try {
