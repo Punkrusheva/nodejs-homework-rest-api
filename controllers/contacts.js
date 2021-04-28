@@ -1,14 +1,6 @@
-const express = require('express')
-const router = express.Router()
-const Contacts = require('../../model/contacts')
-const {
-  validationCreateContact,
-  validationPutContact,
-  validationPatchContact,
-  validationObjectId} = require('./valid-contact-router')
-const handleError = require('../../helper/handle-error')
+const Contacts = require('../model/contacts')
 
-router.get('/', async (req, res, next) => {
+const getAll = async (req, res, next) => {
   try {
     const contacts = await Contacts.listContacts()
     return res.json({
@@ -19,9 +11,9 @@ router.get('/', async (req, res, next) => {
   } catch (err) {
     next(err)
   }
-})
+}
 
-router.get('/:contactId', validationObjectId, async (req, res, next) => {
+const getById = async (req, res, next) => {
     try {
       const contact = await Contacts.getById(req.params.contactId)
       if (contact) {
@@ -40,20 +32,23 @@ router.get('/:contactId', validationObjectId, async (req, res, next) => {
     } catch (err) {
       next(err)
     }
-  })
+  }
 
-router.post('/', validationCreateContact,
-  handleError(async (req, res, next) => {
-    const contact = await Contacts.addContact(req.body)
+const create = async (req, res, next) => {
+  try {
+    const contact = await Contacts.create(req.body)
     return res.status(201).json({
       status: 'success',
       code: 201,
       message: 'Contact add',
-      data:  contact,
+      data: contact,
     })
-}))
+  } catch (e) {
+    next(e)
+  }
+}
 
-router.delete('/:contactId', async (req, res, next) => {
+const remove = async (req, res, next) => {
   try {
       const contact = await Contacts.removeContact(req.params.contactId)
       if (contact) {
@@ -73,10 +68,9 @@ router.delete('/:contactId', async (req, res, next) => {
     } catch (err) {
       next(err)
     }
-})
+}
 
-router.patch('/:contactId',validationPatchContact, 
-  async (req, res, next) => {
+const updateFavorite = async (req, res, next) => {
   try {
       const contact = await Contacts.updateContact(req.params.contactId, req.body)
       if (contact) {
@@ -96,10 +90,9 @@ router.patch('/:contactId',validationPatchContact,
     } catch (err) {
       next(err)
     }
-})
+}
 
-router.put('/:contactId', validationPutContact, 
-  async (req, res, next) => {
+const update = async (req, res, next) => {
   try {
       const contact = await Contacts.updateContact(req.params.contactId, req.body)
       if (contact) {
@@ -118,5 +111,13 @@ router.put('/:contactId', validationPutContact,
     } catch (err) {
       next(err)
     }
-})
-module.exports = router
+}
+
+module.exports = {
+    getAll,
+    getById,
+    create,
+    remove,
+    update,
+    updateFavorite,
+}
