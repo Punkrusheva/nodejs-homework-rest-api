@@ -8,10 +8,6 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: [true, 'Password is required'],
-    /* validate(value) {
-      const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/
-      return re.test(String(value).toLowerCase())
-    } */
   },
   email: {
     type: String,
