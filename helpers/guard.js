@@ -15,7 +15,8 @@ const guard = (req, res, next) => {
         message: 'Access is denied',
           })
     }
-    req.user = user
+      req.user = user
+      // req.local.user = user
        return next()
   })(req, res, next)
 }
