@@ -18,20 +18,19 @@ const getById = async (req, res, next) => {
   try {
     console.log(req.user)
     const userId = req.user ? req.user.id : false
-    
-      const contact = await Contacts.getById(userId, req.params.id)
-      if (contact) {
-        return res.json({
+    const contact = await Contacts.getById(userId, req.params.id)
+    if (contact) {
+      return res.json({
       status: 'success',
       code: 200,
       data: contact,
       })
-      } else {
-        return res.status(404).json({
+    } else {
+      return res.status(404).json({
       status: 'error',
       code: 404,
       data: 'Not Found',
-    })
+      })
     }
     } catch (err) {
       next(err)
@@ -109,7 +108,6 @@ const updateFavorite = async (req, res, next) => {
         return res.json({
       status: 'success',
       code: 200,
-      message: 'Get contact',
       data: contact,
       })
       } else {
@@ -124,6 +122,30 @@ const updateFavorite = async (req, res, next) => {
     }
 }
 
+const subscriptionStarter = async (req, res, next) => {
+  return res.json({
+  status: 'success',
+  code: 200,
+  data: { message: 'Starter only!', },
+  })
+}
+
+const subscriptionPro = async (req, res, next) => {
+  return res.json({
+  status: 'success',
+  code: 200,
+  data: { message: 'Pro only!', },
+  })
+}
+
+const subscriptionBusiness = async (req, res, next) => {
+  return res.json({
+  status: 'success',
+  code: 200,
+  data: { message: 'Business only!', },
+  })
+}
+
 module.exports = {
     getAll,
     getById,
@@ -131,4 +153,7 @@ module.exports = {
     remove,
     update,
     updateFavorite,
+    subscriptionStarter,
+    subscriptionPro,
+    subscriptionBusiness
 }

@@ -12,7 +12,7 @@ const guard = (req, res, next) => {
       return res.status(HttpCode.UNAUTHORIZED).json({
                 status: 'error',
         code: HttpCode.UNAUTHORIZED,
-        message: 'Access is denied',
+        message: 'Unauthorized',
           })
     }
       req.user = user
