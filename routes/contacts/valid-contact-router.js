@@ -8,6 +8,15 @@ const schemaCreateContact = joi.object({
     favorite: joi.boolean().optional()
  })
 
+const schemaQueryContact = joi.object({
+    sortBy: joi.string().valid('name', 'phone', 'email').optional(),
+    sortByDesc: joi.string().valid('name', 'phone', 'email').optional(),
+    filter: joi.string().optional(),// .valid('name', 'phone', 'email')
+    limit: joi.number().integer().min(1).max(50).optional(),
+    offset: joi.number().integer().min(0).optional(),
+    favorite: joi.boolean().optional()
+}). without('sortBy', 'sortDesc')
+ 
  const schemaPutContact = joi.object({
     name: joi.string().min(3).max(30).optional(),
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).optional(),
@@ -28,6 +37,10 @@ const validate = async (schema, obj, next) => {
  }
 }
 
+const validationQueryContact = async (req, res, next) => {
+    return await validate(schemaQueryContact, req.query, next)
+}
+
 const validationCreateContact = async (req, res, next) => {
     return await validate(schemaCreateContact, req.body, next)
 }
@@ -44,6 +57,7 @@ const validationObjectId = async (req, res, next) => {
     next()
   }
 module.exports = {
+    validationQueryContact,
     validationCreateContact,
     validationPutContact,
     validationPatchContact,
