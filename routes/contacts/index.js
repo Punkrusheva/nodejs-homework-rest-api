@@ -7,9 +7,9 @@ const {
   validationPutContact,
   validationPatchContact,
   validationObjectId} = require('../contacts/valid-contact-router')
-const guard = require('../../helpers/guard')
-const subscription = require('../../helpers/subscription')
-const { Subscription } = require('../../helpers/constants')
+const guard = require('../../helper/guard')
+const subscription = require('../../helper/subscription')
+const { Subscription } = require('../../helper/constants')
 
 router.get('/', guard, validationQueryContact, ctrl.getAll)
       .post('/', guard, validationCreateContact, ctrl.create)
