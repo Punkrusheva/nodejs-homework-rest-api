@@ -19,9 +19,13 @@ const upload = multer({
     if (file.mimetype.includes('image')) {
       // Чтобы принять файл, используется как аргумент `true` таким образом:
       cb(null, true)
-        }
+      return
+    }
+    const err = new Error('Загруженный файл не изображение!')
+    err.status = 400
+    cb(err)
   // Чтобы отклонить, прокиньте в аргументы `false` так:
-  cb(null, false)
+  //  cb(null, false)
 } })
 
 module.exports = upload

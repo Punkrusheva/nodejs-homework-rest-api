@@ -16,7 +16,6 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
   try {
-    console.log(req.user)
     const userId = req.user ? req.user.id : false
     const contact = await Contacts.getById(userId, req.params.id)
     if (contact) {
@@ -40,8 +39,6 @@ const getById = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const userId = req.user ? req.user.id : false
-    console.log(userId)
-    console.log(req.body)
     const contact = await Contacts.create(userId, req.body)
     
     return res.status(201).json({
