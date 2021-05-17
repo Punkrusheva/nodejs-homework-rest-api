@@ -32,12 +32,14 @@ const User = {
     createdAt: '2021-04-30T19:31:04.983+00:00',
     updatedAt: '2021-05-06T19:26:43.235+00:00',
     avatarURL: 'https://res.cloudinary.com/dv6czpoxs/image/upload/v1620329204/Avatars/...',
-    idCloudAvatar: 'Avatars/nvkzniocp1uoxhdfva2c'
+    idCloudAvatar: 'Avatars/nvkzniocp1uoxhdfva2c',
+    verify: true,
+    verifyTokenEmail: '111111111'
 }
 
 const users = []
 users[0] = User
 
-const newUser = { email: 'test123456@test.com', password: '12345678' }
+const newUser = { email: 'test123456@test.com', password: '12345678', verify: true, verifyTokenEmail: '111111111' }
 
 module.exports = { contacts, newContact, User, users, newUser }

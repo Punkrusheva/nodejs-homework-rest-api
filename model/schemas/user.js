@@ -1,11 +1,14 @@
 const mongoose = require('mongoose')
-const { Subscription } = require('../../helper/constants')
-const gravatar = require('gravatar')
 const { Schema, model } = mongoose
+const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
+const { nanoid } = require('nanoid')
+const { Subscription } = require('../../helper/constants')
+
 const SALT_FACTOR = 6 
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
   password: {
     type: String,
     required: [true, 'Password is required'],
@@ -41,6 +44,15 @@ const userSchema = new Schema({
     type: String,
     default: null,
   },
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verifyTokenEmail: {
+    type: String,
+    required: true,
+    default: nanoid()
+  }
 },
   {
     versionKey: false,

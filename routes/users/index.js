@@ -25,4 +25,8 @@ router.patch(
   guard,
   uploadAvatar.single('avatar'),
   ctrl.updateAvatar)
+
+router.get("/verify/:verificationToken", ctrl.verify)
+router.post("/verify", ctrl.repeatEmailVerify)
+
 module.exports = router
